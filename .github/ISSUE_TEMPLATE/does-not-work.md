@@ -1,7 +1,7 @@
 ---
 name: Не работает
 about: Сообщение о нерабочем плеере или не появляющемся флажке.
-title: ''
+title: 'Не работает'
 labels: bug
 assignees: Kirlovon
 

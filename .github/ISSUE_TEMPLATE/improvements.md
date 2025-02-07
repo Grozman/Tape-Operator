@@ -1,7 +1,7 @@
 ---
 name: Предложение по улучшению
 about: Предложение идеи для улучшение проекта.
-title: ''
+title: 'Предложение по улучшению'
 labels: enhancement
 assignees: Kirlovon
 
