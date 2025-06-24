@@ -94,7 +94,7 @@ async function init(data, scriptVersion) {
 }
 
 /**
- * Fetch players from Kinobox API
+ * Fetch players from API
  * @param {MovieData} movieData
  */
 async function fetchSources(movieData) {
