@@ -102,16 +102,19 @@ async function fetchSources(movieData) {
 
 	// Add movie and sources data to the request
 	Object.entries(movieData).forEach(([key, value]) => apiURL.searchParams.set(key, value));
-	apiURL.searchParams.set('sources', SOURCES);
 
 	// Send request to the API
 	const request = await fetch(apiURL, { method: 'GET' });
 	if (!request.ok || request?.status !== 200) throw new Error(`Request failed with status ${request.status}`);
 
-	let playersData = await request.json();
+	let response = await request.json();
+	if (typeof response !== 'object' || !Array.isArray(response?.data) || response === null) {
+		throw new Error(`Invalid response type: "${typeof response}"`);
+	}
 
 	// Remove players without full data
-	playersData = playersData.filter((player) => player?.iframeUrl && player?.success && player?.source);
+	let playersData = response.data;
+	playersData = playersData.filter((player) => player?.iframeUrl && player?.success && player?.type);
 
 	return playersData;
 }
@@ -124,7 +127,7 @@ function setSources(sourcesData) {
 
 	// Get preferred source from local storage
 	const preferredSource = localStorage.getItem('preferred-source');
-	let preferredSourceIndex = sourcesData.findIndex((source) => source.source === preferredSource);
+	let preferredSourceIndex = sourcesData.findIndex((source) => source.type === preferredSource);
 
 	// If source is not found, select the first one
 	if (preferredSourceIndex === -1) preferredSourceIndex = 0;
@@ -132,7 +135,7 @@ function setSources(sourcesData) {
 	sourcesData.forEach((source, index) => {
 		const sourceElement = document.createElement('button');
 		sourceElement.className = 'source';
-		sourceElement.innerText = source?.source;
+		sourceElement.innerText = source?.type;
 
 		if (index === preferredSourceIndex) {
 			sourceElement.classList.add('selected');
@@ -151,7 +154,7 @@ function setSources(sourcesData) {
 			sourceElement.classList.add('selected');
 
 			// Save selected source as preferred
-			localStorage.setItem('preferred-source', source.source);
+			localStorage.setItem('preferred-source', source.type);
 
 			selectSource(source);
 		});
